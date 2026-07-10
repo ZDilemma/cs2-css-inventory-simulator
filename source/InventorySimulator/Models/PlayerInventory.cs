@@ -20,11 +20,6 @@ public class PlayerInventory(EquippedV4Response data)
     private static readonly object RandomStatTrakLock = new();
     private static readonly Random RandomStatTrakRng = new();
 
-    private static readonly int[] RandomStatTrakBasePool =
-    [
-        11111,69,420,357,1337,2024,4096,1471,6543,51264,84231,2348,8756,4321
-    ];
-
     private static readonly Dictionary<(ulong SteamID, int Uid), int> RandomStatTrakOffsets = [];
 
     public void ApplyRandomStatTrakInitialValues(ulong steamId)
@@ -52,10 +47,7 @@ public class PlayerInventory(EquippedV4Response data)
 
                 if (!RandomStatTrakOffsets.TryGetValue(key, out int offset))
                 {
-                    offset = RandomStatTrakBasePool[
-                        RandomStatTrakRng.Next(RandomStatTrakBasePool.Length)
-                    ];
-
+                    offset = RandomStatTrakRng.Next(1, 10001);
                     RandomStatTrakOffsets[key] = offset;
                 }
 
