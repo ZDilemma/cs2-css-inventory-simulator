@@ -84,6 +84,7 @@ public static class CCSPlayerControllerExtensions
         if (response != null)
         {
             var inventory = new PlayerInventory(response);
+            inventory.ApplyRandomStatTrakInitialValues(self.SteamID);
             if (existing != null)
                 inventory.WeaponWearCache = existing.WeaponWearCache;
             inventory.InitializeWearOverrides();

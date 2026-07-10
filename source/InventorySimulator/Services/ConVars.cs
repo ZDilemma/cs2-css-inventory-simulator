@@ -106,6 +106,12 @@ public static class ConVars
         true
     );
 
+    public static readonly FakeConVar<bool> IsStatTrakRandomEnabled = new(
+        "invsim_stattrak_random_enabled",
+        "Enable random StatTrak base values on inventory initialization.",
+        false
+    ); 
+
     public static readonly FakeConVar<bool> IsFallbackTeam = new(
         "invsim_fallback_team",
         "Allow using skins from any team (prioritizes current team first).",

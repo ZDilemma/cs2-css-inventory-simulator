@@ -17,6 +17,63 @@ public class PlayerInventory(EquippedV4Response data)
 
     public Dictionary<(int paint, float wear), (ushort def, string stickers)> WeaponWearCache = [];
 
+    private static readonly object RandomStatTrakLock = new();
+    private static readonly Random RandomStatTrakRng = new();
+
+    private static readonly int[] RandomStatTrakBasePool =
+    [
+        11111,69,420,357,1337,2024,4096,1471,6543,51264,84231,2348,8756,4321
+    ];
+
+    private static readonly Dictionary<(ulong SteamID, int Uid), int> RandomStatTrakOffsets = [];
+
+    public void ApplyRandomStatTrakInitialValues(ulong steamId)
+    {
+        if (!ConVars.IsStatTrakRandomEnabled.Value)
+            return;
+
+        lock (RandomStatTrakLock)
+        {
+            void Apply(InventoryItem? item)
+            {
+                if (item == null)
+                    return;
+
+                if (item.Stattrak == null || item.Stattrak < 0)
+                    return;
+
+                if (item.Uid == null)
+                    return;
+
+                if (item.RandomStatTrakBaseApplied)
+                    return;
+
+                var key = (steamId, item.Uid.Value);
+
+                if (!RandomStatTrakOffsets.TryGetValue(key, out int offset))
+                {
+                    offset = RandomStatTrakBasePool[
+                        RandomStatTrakRng.Next(RandomStatTrakBasePool.Length)
+                    ];
+
+                    RandomStatTrakOffsets[key] = offset;
+                }
+
+                item.Stattrak += offset;
+                item.RandomStatTrakBaseApplied = true;
+            }
+
+            foreach (var item in _data.CTWeapons.Values)
+                Apply(item);
+
+            foreach (var item in _data.TWeapons.Values)
+                Apply(item);
+
+            foreach (var item in _data.Knives.Values)
+                Apply(item);
+        }
+    }
+
     public static PlayerInventory Empty() => new(new());
 
     public void InitializeWearOverrides()

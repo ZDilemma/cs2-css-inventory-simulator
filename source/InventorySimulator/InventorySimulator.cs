@@ -39,9 +39,16 @@ public partial class InventorySimulator : BasePlugin
     public void OnFileChanged(object? _, string value)
     {
         if (Inventories.Load(value))
+        {
             foreach (var player in Utilities.GetPlayers().Where(p => !p.IsBot))
+            {
                 if (Inventories.TryGet(player.SteamID, out var inventory))
+                {
+                    inventory.ApplyRandomStatTrakInitialValues(player.SteamID);
                     player.GetState().Inventory = inventory;
+                }
+            }
+        }
     }
 
     public void OnIsRequireInventoryChanged(object? _, bool value)

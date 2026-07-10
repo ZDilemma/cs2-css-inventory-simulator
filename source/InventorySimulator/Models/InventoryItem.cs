@@ -33,6 +33,9 @@ public class InventoryItem
     [JsonPropertyName("stattrak")]
     public int? Stattrak { get; set; }
 
+    [JsonIgnore]
+    public bool RandomStatTrakBaseApplied { get; set; }    
+
     [JsonPropertyName("stickers")]
     public List<StickerItem>? Stickers { get; set; }
 
